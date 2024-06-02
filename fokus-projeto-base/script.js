@@ -19,6 +19,7 @@ const audioTempoFinalizado = new Audio('./sons/beep.mp3');
 
 let tempoDecorridoEmSegundos = 1500;
 let intervaloId = null;
+let contextoAtual = 'foco';
 
 musica.loop = true
 
@@ -39,12 +40,14 @@ focoBt.addEventListener('click', () => {
 curtoBt.addEventListener('click', () => {
     tempoDecorridoEmSegundos = 300;
     alterarContexto('descanso-curto');
+    contextoAtual = 'descanso-curto';
     curtoBt.classList.add('active');
 })
 
 longoBt.addEventListener('click', () => {
     tempoDecorridoEmSegundos = 900;
     alterarContexto('descanso-longo');
+    contextoAtual = 'descanso-longo';
     longoBt.classList.add('active');
 })
 
@@ -117,6 +120,30 @@ function mostrarTempo() {       // Criando uma função para mostrar o tempo na 
     tempoNaTela.innerHTML = `${tempoFormatado}`;
 }
 
+function reiniciar() {
+    zerar();
+    audioTempoFinalizado.pause();
+    audioTempoFinalizado.currentTime = 0;
+
+    // Reiniciar para o contexto que estava ativo
+    switch (contextoAtual) {
+        case 'foco':
+            tempoDecorridoEmSegundos = 1500;
+            break
+        case 'descanso-curto':
+            tempoDecorridoEmSegundos = 300;
+            break
+        case 'descanso-longo':
+            tempoDecorridoEmSegundos = 900;
+            break;
+    }
+    alterarContexto(contextoAtual);
+    botoes.forEach(function (botao) {
+        if (botao.classList.contains(`app__card-button--${contextoAtual}`)) {
+            botao.classList.add('active');
+        }
+    });
+}
 
 mostrarTempo();
 
